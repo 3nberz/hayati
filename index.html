@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE ACCESS: Hayati-OS</title>
+    <style>
+        :root { --primary: #ff4d6d; --bg: #0f0f0f; --terminal-green: #00ff41; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Courier New', monospace; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .container { text-align: center; width: 90%; max-width: 500px; z-index: 10; position: relative; }
+        .hidden { display: none !important; }
+        
+        /* Stages 1 & 2: Terminal & Login */
+        #terminal { color: var(--terminal-green); text-align: left; background: #000; padding: 25px; border: 1px solid #333; min-height: 150px; }
+        .login-box { background: #1a1a1a; padding: 40px 30px; border-radius: 20px; border: 1px solid var(--primary); }
+        input { padding: 14px; width: 85%; border-radius: 8px; margin-bottom: 15px; background: #252525; color: white; border: 1px solid #333; outline: none; }
+        button { padding: 14px 30px; cursor: pointer; border-radius: 8px; border: none; font-weight: bold; background: var(--primary); color: white; }
+        
+        /* Stage 3: Proposal */
+        #no-btn { position: absolute; background: #444; color: white; transition: 0.1s; z-index: 50; }
+        #yes-btn { background: #28a745; color: white; font-size: 1.2rem; position: absolute; left: 15%; z-index: 100; }
+        .cat-popup { position: fixed; background: white; color: black; padding: 10px; border-radius: 15px; width: 200px; z-index: 200; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .cat-popup img { width: 100%; border-radius: 10px; }
+
+        /* Stage 4: THE SCRATCH AREA */
+        #scratch-wrapper { 
+            position: relative; 
+            width: 320px; 
+            height: 420px; 
+            margin: 0 auto; 
+            background: #000; 
+            border: 4px solid white; 
+            border-radius: 15px; 
+            overflow: hidden;
+        }
+
+        #message-behind {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 20px; box-sizing: border-box;
+            text-align: center;
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            cursor: crosshair;
+            touch-action: none;
+            z-index: 2;
+        }
+
+        /* Floating Hearts */
+        .heart { position: fixed; color: var(--primary); font-size: 20px; pointer-events: none; z-index: 1; animation: floatUp 4s linear forwards; }
+        @keyframes floatUp { from { transform: translateY(100vh); opacity: 1; } to { transform: translateY(-10vh); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="terminal">
+            <div id="terminal-content">> Initializing Heart-OS...</div>
+        </div>
+
+        <div id="login" class="hidden login-box">
+            <h2 style="color: var(--primary)">🔐 AUTHENTICATING...</h2>
+            <input type="text" id="user-input" placeholder="Username">
+            <input type="password" id="pass-input" placeholder="Password">
+            <button onclick="checkLogin()">Login</button>
+        </div>
+
+        <div id="proposal" class="hidden">
+            <h1 style="color: var(--primary)">Will you be my Valentine? ❤️</h1>
+            <div style="position: relative; height: 200px; margin-top: 50px;">
+                <button id="yes-btn" onclick="startScratch()">YES!</button>
+                <button id="no-btn">No</button>
+            </div>
+        </div>
+
+        <div id="scratch-stage" class="hidden">
+            <h2 style="color: var(--primary)">ACCESS GRANTED 🎉</h2>
+            <div id="scratch-wrapper">
+                <div id="message-behind">
+                    <p style="color: var(--primary); font-weight: bold; margin-bottom: 10px; font-size: 1.2rem;">Happy Valentine’s Day, hayati ❤️</p>
+                    <p style="font-size: 0.9rem; line-height: 1.4;">
+                        You’re my comfort, my favorite smile, and the reason my heart forgets how to be quiet. <br>
+                        You make me laugh when I don’t want to, calm me when I need it.
+                    </p>
+                    <p dir="rtl" style="font-size: 1.3rem; margin: 15px 0; color: #fff;">أنتِ قلبي، ووجودك بحياتي نعمة ما أقدر أستغنى عنها.</p>
+                    <p style="font-size: 0.9rem;">I love you more every day—it just keeps happening 💘</p>
+                </div>
+                <canvas id="scratch-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const lines = ["> Bypassing local firewall...", "> Connection established...", "> ACCESS GRANTED."];
+        let lineIdx = 0;
+        function typeTerminal() {
+            if (lineIdx < lines.length) {
+                document.getElementById('terminal-content').innerHTML += "<br>" + lines[lineIdx];
+                lineIdx++;
+                setTimeout(typeTerminal, 700);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('terminal').classList.add('hidden');
+                    document.getElementById('login').classList.remove('hidden');
+                }, 1000);
+            }
+        }
+        setTimeout(typeTerminal, 500);
+
+        function checkLogin() {
+            if(document.getElementById('user-input').value.toLowerCase() === "hayati" && document.getElementById('pass-input').value === "2001428") {
+                document.getElementById('login').classList.add('hidden');
+                document.getElementById('proposal').classList.remove('hidden');
+            } else { alert("Access Denied."); }
+        }
+
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        let yesSize = 1;
+
+        noBtn.addEventListener('mouseover', () => {
+            noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            noBtn.style.position = 'fixed';
+            yesSize += 0.25;
+            yesBtn.style.transform = `scale(${yesSize})`;
+            showCat();
+        });
+
+        function showCat() {
+            const popup = document.createElement('div');
+            popup.className = 'cat-popup';
+            popup.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+            popup.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+            popup.innerHTML = `<img src="cat1.gif"><p style="font-size:12px;">No please rethink it! 🥺</p>`;
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 2500);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+
+        function startScratch() {
+            // Play Music
+            const music = document.getElementById('bg-music');
+            music.play().catch(e => console.log("Music play blocked by browser"));
+
+            document.getElementById('proposal').classList.add('hidden');
+            document.getElementById('scratch-stage').classList.remove('hidden');
+            setInterval(createHeart, 400);
+
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 320;
+            canvas.height = 420;
+
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#444';
+            ctx.font = "bold 20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("SCRATCH TO READ ❤️", 160, 210);
+
+            function scratch(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+                const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 35, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            canvas.addEventListener('mousemove', (e) => e.buttons === 1 && scratch(e));
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); scratch(e); });
+        }
+    </script>
+</body>
+</html>
+
